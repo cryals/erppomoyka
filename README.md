@@ -84,24 +84,24 @@
 git clone https://github.com/ArcaneSS14/arcane-station.git
 ```
 
-1. Откройте коммандную строку в папке репозитория и введите команду для того, чтобы скачать движок игры.
+> 2. Откройте коммандную строку в папке репозитория и введите команду для того, чтобы скачать движок игры.
 
 ```shell
 git submodule update --init --recursive
 ```
 
-1. Следующим этапом идёт билд-билда, для этого нужно ввести команду с указанием того, для чего вы билдите, для этого нужно написать Release, Tools или Debug.
+> 3. Следующим этапом идёт билд-билда, для этого нужно ввести команду с указанием того, для чего вы билдите, для этого нужно написать Release, Tools или Debug.
 
 ```shell
 dotnet build --configuration Release/Tools/Debug
 ```
 
-[!TIP]
-К примеру Release - полная версия, Tools - урезаная версия, Debug - урезаная версия, но которая будет вылетать при любой ошибке. В большинстве случаев вам хватит Tools, что-бы не перенапрягать машину.
+> [!TIP]
+> К примеру Release - полная версия, Tools - урезаная версия, Debug - урезаная версия, но которая будет вылетать при любой ошибке. В большинстве случаев вам хватит Tools, что-бы не перенапрягать машину.
 
-1. Далее вам требуется запустить сервер с клиентом, для этого есть несколько способов.
+> 4. Далее вам требуется запустить сервер с клиентом, для этого есть несколько способов.
 
-· 4.1. Командами, в конце так же можно указать вместо Tools любой интересующий вас тип.
+> · 4.1. Командами, в конце так же можно указать вместо Tools любой интересующий вас тип.
 
 ```shell
 dotnet run --project Content.Server --configuration Tools
@@ -111,13 +111,13 @@ dotnet run --project Content.Server --configuration Tools
 dotnet run --project Content.Client --configuration Tools
 ```
 
-· 4.2. Запуск .bat файла, который автоматически выполнит те же команды.
+> · 4.2. Запуск .bat файла, который автоматически выполнит те же команды.
 
 ```shell
 Scripts/bat/runQuickAll.bat
 ```
 
-1. Подключитесь к localhost в появившемся окне и играйте!
+> 5. Подключитесь к localhost в появившемся окне и играйте!
 
 ---
 
@@ -135,5 +135,5 @@ By submitting a pull request or making a commit to the Arcane Station, you agree
 
 </div>
 
-[!NOTE]
-Some assets are licensed under the non-commercial CC-BY-NC-SA 3.0 or similar non-commercial licenses and will need to be removed if you wish to use this project commercially.
+> [!NOTE]
+> Some assets are licensed under the non-commercial CC-BY-NC-SA 3.0 or similar non-commercial licenses and will need to be removed if you wish to use this project commercially.
