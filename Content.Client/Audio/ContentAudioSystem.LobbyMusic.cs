@@ -35,6 +35,7 @@ public sealed partial class ContentAudioSystem
     /// Shuffled list of soundtrack file-names.
     /// </summary>
     private string[]? _lobbyPlaylist;
+    private int _lobbyPlaylistRevision = -1; // Arcane
 
     /// <summary>
     /// Short info about lobby soundtrack currently playing. Is null if soundtrack is not playing.
@@ -100,6 +101,10 @@ public sealed partial class ContentAudioSystem
     private void OnLeave(object? sender, PlayerEventArgs args)
     {
         EndLobbyMusic();
+        // Arcane-Start
+        _lobbyPlaylist = null;
+        _lobbyPlaylistRevision = -1;
+        // Arcane-End
     }
 
     private void LobbyMusicVolumeCVarChanged(float volume)
@@ -129,7 +134,7 @@ public sealed partial class ContentAudioSystem
     {
         var playlist = playlistChangedEvent.Playlist;
         //playlist is already playing, no need to restart it
-        if (_lobbySoundtrackInfo != null
+        if (_lobbyPlaylistRevision == playlistChangedEvent.Revision && _lobbySoundtrackInfo != null // Arcane-Edit: same playlist > same revision and playlist
             && _lobbyPlaylist != null
             && _lobbyPlaylist.SequenceEqual(playlist)
            )
@@ -137,8 +142,13 @@ public sealed partial class ContentAudioSystem
             return;
         }
 
+        // Arcane-Edit-Start: retain snapshots even when muted; admin changes never start in-game music.
+        _lobbyPlaylistRevision = playlistChangedEvent.Revision;
+        _lobbyPlaylist = playlist;
+        if (playlistChangedEvent.LobbyOnly && _state.CurrentState is not LobbyState) return;
         EndLobbyMusic();
-        StartLobbyMusic(playlistChangedEvent.Playlist);
+        StartLobbyMusic(playlist);
+        // Arcane-Edit-End
     }
 
     /// <summary>
@@ -250,6 +260,7 @@ public sealed partial class ContentAudioSystem
             )
         {
             var nextSoundtrackFilename = GetNextSoundtrackFromPlaylist(_lobbySoundtrackInfo.Filename, _lobbyPlaylist);
+            EndLobbyMusic(); // Arcane
             PlaySoundtrack(nextSoundtrackFilename);
         }
     }

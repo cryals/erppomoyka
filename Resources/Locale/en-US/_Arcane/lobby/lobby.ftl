@@ -1,0 +1,33 @@
+arcane-lobby-round = Round status
+arcane-lobby-round-running = Round in progress
+arcane-lobby-players = Players online: { $count }
+arcane-lobby-waiting = Players in lobby: { $count }
+arcane-lobby-ready = Ready: { $count }
+arcane-lobby-hide-ui = Hide interface
+arcane-lobby-show-ui = Show interface
+arcane-lobby-retry = WebUI unavailable — retry
+arcane-lobby-license = Artwork license and credits
+arcane-lobby-chat-send = Send message
+arcane-lobby-chat-filters = Filters
+arcane-lobby-chat-older = Load earlier messages
+arcane-lobby-chat-bottom = Latest messages
+arcane-lobby-chat-placeholder = Message · Tab to switch channel
+
+cmd-lobbybackground-desc = Change the lobby background for all players.
+cmd-lobbybackground-help = lobbybackground list | set <background-id> | random | reset
+cmd-lobbymusic-desc = Change lobby music using the configured music collection.
+cmd-lobbymusic-help = lobbymusic list | set <track-id> | random | reset
+arcane-lobby-command-denied = You need the Fun permission to change lobby media.
+arcane-lobby-command-list = Available resources: { $count }
+arcane-lobby-command-empty = The configured media pool is empty.
+arcane-lobby-command-invalid = This resource is not in the available lobby pool. Use list to see valid IDs.
+arcane-lobby-command-selected = Lobby media selected: { $id }
+
+arcane-lobby-art-arcane = Arcane
+arcane-lobby-art-space = Space
+arcane-lobby-art-spacex = Spaceflight
+arcane-lobby-art-rat = Rat
+arcane-lobby-artist-lucas = Lucas Andrade / Pexels
+arcane-lobby-artist-mahdi = Mahdi Bafande / Pexels
+arcane-lobby-artist-pexels = Pexels
+arcane-lobby-artist-kraida = Kraida / ss14-art

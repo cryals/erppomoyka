@@ -13,7 +13,7 @@ public sealed partial class ServerGameTicker
     [ViewVariables]
     private List<ProtoId<LobbyBackgroundPrototype>>? _lobbyBackgrounds;
 
-    private static readonly string[] WhitelistedBackgroundExtensions = new string[] {"png", "jpg", "jpeg", "webp"};
+    private static readonly string[] WhitelistedBackgroundExtensions = {"png", "jpg", "jpeg", "webp", "gif"}; // Arcane-Edit: static formats > include GIF
 
     private void InitializeLobbyBackground()
     {
@@ -24,7 +24,7 @@ public sealed partial class ServerGameTicker
         foreach (var proto in allprotos)
         {
             var ext = proto.Background.Extension;
-            if (!WhitelistedBackgroundExtensions.Contains(ext))
+            if (!WhitelistedBackgroundExtensions.Contains(ext.ToLowerInvariant())) // Arcane-Edit: case-sensitive > case-insensitive extension
                 continue;
 
             //create a protoid and add it to the list
@@ -41,4 +41,18 @@ public sealed partial class ServerGameTicker
         else
             LobbyBackground = null;
     }
+
+    // Arcane-Start: owner API for permission-checked administrative callers.
+    public IReadOnlyList<ProtoId<LobbyBackgroundPrototype>> AvailableLobbyBackgrounds =>
+        _lobbyBackgrounds ?? new List<ProtoId<LobbyBackgroundPrototype>>();
+
+    public bool SetLobbyBackground(ProtoId<LobbyBackgroundPrototype>? background)
+    {
+        if (background != null && (_lobbyBackgrounds == null || !_lobbyBackgrounds.Contains(background.Value))) return false;
+        if (background == null) RandomizeLobbyBackground();
+        else LobbyBackground = background;
+        SendStatusToAll();
+        return true;
+    }
+    // Arcane-End
 }

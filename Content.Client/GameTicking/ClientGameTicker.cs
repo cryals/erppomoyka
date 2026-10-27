@@ -33,6 +33,11 @@ public sealed partial class ClientGameTicker : GameTicker
     private Dictionary<NetEntity, ProtoId<JobWeightPrototype>?> _jobWeightsByStation = new();
 
     [ViewVariables] public bool AreWeReady { get; private set; }
+    // Arcane-Start
+    public int LobbyPlayerCount { get; private set; }
+    public int TotalPlayerCount { get; private set; }
+    public int LobbyReadyCount { get; private set; }
+    // Arcane-End
     [ViewVariables] public bool IsGameStarted { get; private set; }
     [ViewVariables] public ResolvedSoundSpecifier? RestartSound { get; private set; }
     [ViewVariables] public ProtoId<LobbyBackgroundPrototype>? LobbyBackground { get; private set; }
@@ -148,6 +153,11 @@ public sealed partial class ClientGameTicker : GameTicker
     [SubscribeNetworkEvent]
     private void LobbyStatus(TickerLobbyStatusEvent message)
     {
+        // Arcane-Start
+        LobbyPlayerCount = message.LobbyCount;
+        TotalPlayerCount = message.PlayerCount;
+        LobbyReadyCount = message.ReadyCount;
+        // Arcane-End
         StartTime = message.StartTime;
         RoundStartTimeSpan = message.RoundStartTimeSpan;
         IsGameStarted = message.IsRoundStarted;

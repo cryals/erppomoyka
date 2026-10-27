@@ -6,6 +6,7 @@ namespace Content.Client.Info
     public sealed class ServerInfo : BoxContainer
     {
         private readonly RichTextLabel _richTextLabel;
+        public string Markup => _richTextLabel.Text ?? ""; // Arcane
 
         public ServerInfo()
         {

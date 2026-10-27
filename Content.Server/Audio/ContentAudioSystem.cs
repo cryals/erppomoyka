@@ -23,6 +23,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
 
     private SoundCollectionPrototype? _lobbyMusicCollection = default!;
     private string[]? _lobbyPlaylist;
+    private int _lobbyPlaylistRevision; // Arcane
 
     public override void Initialize()
     {
@@ -46,7 +47,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
                     _lobbyMusicCollection = null;
                 }
 
-                _lobbyPlaylist = ShuffleLobbyPlaylist();
+                ResetLobbyPlaylist(); // Arcane-Edit: local shuffle > publish new revision
             },
             true);
 
@@ -60,6 +61,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
     private void OnRoundCleanup(RoundRestartCleanupEvent ev)
     {
         SilenceAudio();
+        ResetLobbyPlaylist(); // Arcane
     }
 
     private void OnProtoReload(PrototypesReloadedEventArgs obj)
@@ -80,7 +82,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
         if (_lobbyPlaylist != null)
         {
             var session = ev.PlayerSession;
-            RaiseNetworkEvent(new LobbyPlaylistChangedEvent(_lobbyPlaylist), session);
+            RaiseNetworkEvent(new LobbyPlaylistChangedEvent(_lobbyPlaylist) { Revision = _lobbyPlaylistRevision, LobbyOnly = true }, session); // Arcane-Edit: playlist > versioned snapshot
         }
     }
 
@@ -91,7 +93,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
         // at the end of a round, and this needs to be set before RestartRound
         // in order for the lobby song status display to be accurate.
         _lobbyPlaylist = ShuffleLobbyPlaylist();
-        RaiseNetworkEvent(new LobbyPlaylistChangedEvent(_lobbyPlaylist));
+        RaiseNetworkEvent(new LobbyPlaylistChangedEvent(_lobbyPlaylist) { Revision = ++_lobbyPlaylistRevision }); // Arcane-Edit: playlist > new revision, retain round-end playback
     }
 
     private string[] ShuffleLobbyPlaylist()
@@ -108,4 +110,30 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
 
         return playlist;
     }
+
+    // Arcane-Start
+    public string[] AvailableLobbyTracks => _lobbyMusicCollection?.PickFiles.Select(x => x.ToString()).Distinct().Order().ToArray() ?? [];
+    public string? SelectedLobbyTrack => _lobbyPlaylist?.FirstOrDefault();
+
+    public bool SetLobbyTrack(string track)
+    {
+        var pool = AvailableLobbyTracks;
+        if (!pool.Contains(track)) return false;
+        _lobbyPlaylist = new[] { track }.Concat(pool.Where(x => x != track)).ToArray();
+        PublishLobbyPlaylist();
+        return true;
+    }
+
+    public void ResetLobbyPlaylist()
+    {
+        _lobbyPlaylist = ShuffleLobbyPlaylist();
+        PublishLobbyPlaylist();
+    }
+
+    private void PublishLobbyPlaylist() => RaiseNetworkEvent(new LobbyPlaylistChangedEvent(_lobbyPlaylist ?? [])
+    {
+        Revision = ++_lobbyPlaylistRevision,
+        LobbyOnly = true,
+    });
+    // Arcane-End
 }

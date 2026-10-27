@@ -4,28 +4,171 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Configuration;
+using Robust.Client.WebView; // Arcane
+// Arcane-Start
+using System.Numerics;
+using Robust.Client.Graphics;
+using Robust.Client.UserInterface.Controls;
+// Arcane-End
 
 namespace Content.Client.Options.UI;
 
 [GenerateTypedNameReferences]
 public sealed partial class EscapeMenu : DefaultWindow
 {
+    // Arcane-Start
+    public WebViewControl? Browser { get; private set; }
+    internal WebUiBridge? Bridge { get; private set; }
+    internal enum BrowserState { Closed, Loading, Ready, Failed }
+    internal BrowserState State { get; private set; } = BrowserState.Closed;
+    internal event Action<string>? NativeActionRequested;
+    private bool _browserNeedsReset = true;
+    private float _loadSeconds;
+    // Arcane-End
+
     public EscapeMenu()
     {
         RobustXamlLoader.Load(this);
+        // Arcane-Edit-Start
+        MinWidth = 160;
+        MinHeight = 120;
+        SetWidth = 372;
+        SetHeight = 650;
+        Contents.Margin = new Thickness(1, 0, 1, 1);
+        StyleChrome(this);
+        RetryBrowserButton.OnPressed += _ => { _browserNeedsReset = true; PrepareBrowser(); };
+        // Arcane-Edit-End
+    }
 
-        // TODO: removed with https://github.com/space-wizards/space-station-14/pull/44431
-        var uriOpener = IoCManager.Resolve<IUriOpener>();
-        var cfg = IoCManager.Resolve<IConfigurationManager>();
-
-        var bugReport = cfg.GetCVar(CCVars.InfoLinksBugReport);
-        if (!string.IsNullOrWhiteSpace(bugReport))
+    // Arcane-Start
+    private void CreateBrowser()
+    {
+        State = BrowserState.Loading;
+        _loadSeconds = 0;
+        LoadingLabel.Visible = true;
+        FallbackPanel.Visible = false;
+        _browserNeedsReset = false;
+        try
         {
-            BugReportButton.OnPressed += _ => uriOpener.OpenUri(bugReport);
+            Browser = new WebViewControl { HorizontalExpand = true, VerticalExpand = true };
+            Bridge = new WebUiBridge(Browser);
+            BrowserHost.AddChild(Browser);
         }
-        else
+        catch (Exception exception)
         {
-            BugReportButton.Visible = false;
+            Logger.Error($"Escape Menu browser creation failed: {exception}");
+            FailBrowser();
         }
     }
+
+    internal void PrepareBrowser()
+    {
+        if (!IsOpen || !_browserNeedsReset) return;
+        // A fresh control gets an initial layout resize. Reusing the old control
+        // can reopen CEF with a 1x1 texture but unchanged logical dimensions.
+        RemoveBrowser();
+        CreateBrowser();
+    }
+
+    internal void UpdateBrowser(float seconds)
+    {
+        PrepareBrowser();
+        if (State != BrowserState.Loading) return;
+        _loadSeconds += seconds;
+        if (_loadSeconds >= 10) FailBrowser();
+    }
+
+    internal void MarkReady()
+    {
+        if (State != BrowserState.Loading) return;
+        State = BrowserState.Ready;
+        LoadingLabel.Visible = false;
+        Browser?.GrabKeyboardFocus();
+    }
+
+    private void RemoveBrowser()
+    {
+        Bridge?.Dispose();
+        Bridge = null;
+        if (Browser?.Parent == BrowserHost) BrowserHost.RemoveChild(Browser);
+        Browser = null;
+    }
+
+    private void FailBrowser()
+    {
+        RemoveBrowser();
+        State = BrowserState.Failed;
+        LoadingLabel.Visible = false;
+        FallbackPanel.Visible = true;
+        FallbackStatus.Text = Loc.GetString("ui-webui-fallback");
+        RetryBrowserButton.GrabKeyboardFocus();
+    }
+
+    internal void SetFallbackActions(IEnumerable<(string Id, string Label, bool Enabled, string? Tooltip, bool Separator)> actions)
+    {
+        FallbackActions.RemoveAllChildren();
+        foreach (var action in actions)
+        {
+            if (action.Separator) FallbackActions.AddChild(new Control { MinHeight = 8 });
+            var button = new Button { Text = action.Label, Disabled = !action.Enabled, ToolTip = action.Tooltip, MinHeight = 40, CanKeyboardFocus = true };
+            button.OnPressed += _ => NativeActionRequested?.Invoke(action.Id);
+            FallbackActions.AddChild(button);
+        }
+    }
+
+    internal void ShowActionError() => FallbackStatus.Text = Loc.GetString("ui-webui-action-failed");
+
+    protected override void ExitedTree()
+    {
+        base.ExitedTree();
+        InvalidateBrowser();
+    }
+
+    protected override void UIScaleChanged()
+    {
+        base.UIScaleChanged();
+        // Hide immediately; defer replacing children until the scale traversal
+        // is finished. Never draw the previous scale's texture at the new scale.
+        InvalidateBrowser();
+    }
+
+    private void InvalidateBrowser()
+    {
+        if (Browser != null) Browser.Visible = false;
+        Bridge?.Dispose();
+        State = BrowserState.Closed;
+        _browserNeedsReset = true;
+    }
+
+    internal void FitToViewport(Vector2 viewport, int rows, int dividers)
+    {
+        // Reserve native header/borders plus CSS shell padding, including rounding at fractional UI scale.
+        var width = MathF.Min(372, MathF.Max(160, viewport.X - 32));
+        var height = MathF.Min(rows * 40 + dividers * 15 + 50, MathF.Max(120, viewport.Y - 48));
+        if (SetWidth != width) SetWidth = width;
+        if (SetHeight != height) SetHeight = height;
+    }
+
+    private static void StyleChrome(Control control)
+    {
+        if (control is PanelContainer panel &&
+            (panel.HasStyleClass(StyleClassWindowPanel) || panel.HasStyleClass(StyleClassWindowHeader)))
+        {
+            panel.PanelOverride = new StyleBoxFlat(Color.FromHex("#1B2932"))
+            {
+                BorderColor = Color.FromHex("#3D5868"),
+                BorderThickness = new Thickness(1),
+            };
+        }
+        if (control is Label label && label.HasStyleClass(StyleClassWindowTitle))
+            label.FontColorOverride = Color.FromHex("#DDEAF1");
+        foreach (var child in control.Children) StyleChrome(child);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing) RemoveBrowser();
+        base.Dispose(disposing);
+    }
+    // Arcane-End
 }

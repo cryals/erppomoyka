@@ -40,6 +40,7 @@ public sealed partial class ServerGameTicker
 
     public void UpdateInfoText()
     {
+        SendStatusToAll(); // Arcane
         RaiseNetworkEvent(GetInfoMsg(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions));
         RaiseNetworkEvent(new TickerInGameInfoEvent(GetInfoText(true)), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions)); // Trauma
     }
@@ -107,7 +108,14 @@ public sealed partial class ServerGameTicker
     private TickerLobbyStatusEvent GetStatusMsg(ICommonSession session)
     {
         _playerGameStatuses.TryGetValue(session.UserId, out var status);
-        return new TickerLobbyStatusEvent(RunLevel != GameRunLevel.PreRoundLobby, LobbyBackground, status == PlayerGameStatus.ReadyToPlay, _roundStartTime, RoundPreloadTime, RoundStartTimeSpan, Paused);
+        // Arcane-Edit-Start: include connected player counts, not stale disconnected entries.
+        return new TickerLobbyStatusEvent(RunLevel != GameRunLevel.PreRoundLobby, LobbyBackground, status == PlayerGameStatus.ReadyToPlay, _roundStartTime, RoundPreloadTime, RoundStartTimeSpan, Paused)
+        {
+            PlayerCount = _playerManager.PlayerCount,
+            LobbyCount = _playerManager.Sessions.Count(s => _playerGameStatuses.TryGetValue(s.UserId, out var state) && state != PlayerGameStatus.JoinedGame),
+            ReadyCount = _playerManager.Sessions.Count(s => _playerGameStatuses.TryGetValue(s.UserId, out var state) && state == PlayerGameStatus.ReadyToPlay),
+        };
+        // Arcane-Edit-End
     }
 
     private void SendStatusToAll()

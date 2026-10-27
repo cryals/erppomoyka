@@ -104,6 +104,11 @@ namespace Content.Client.Lobby
         }
 
         private void OnSetupPressed(BaseButton.ButtonEventArgs args)
+            => OpenCharacterSetup(); // Arcane
+
+        // Arcane-Start: shared native/WebUI action entry points.
+        public void OpenCharacterSetup()
+        // Arcane-End
         {
             SetReady(false);
             Lobby?.SwitchState(LobbyGui.LobbyGuiState.CharacterSetup);
@@ -118,6 +123,17 @@ namespace Content.Client.Lobby
 
             new LateJoinGui().OpenCentered();
         }
+
+        // Arcane-Start
+        public void ActivateReady()
+        {
+            if (_gameTicker.IsGameStarted)
+            {
+                if (!_gameTicker.DisallowedLateJoin) new LateJoinGui().OpenCentered();
+            }
+            else SetReady(!_gameTicker.AreWeReady);
+        }
+        // Arcane-End
 
         private void OnReadyToggled(BaseButton.ButtonToggledEventArgs args)
         {
@@ -175,7 +191,7 @@ namespace Content.Client.Lobby
 
         private void LobbyLateJoinStatusUpdated()
         {
-            Lobby!.ReadyButton.Disabled = _gameTicker.DisallowedLateJoin;
+            Lobby!.ReadyButton.Disabled = _gameTicker.IsGameStarted && _gameTicker.DisallowedLateJoin; // Arcane-Edit: late-join restriction > only after round starts
         }
 
         private void UpdateLobbyUi()
@@ -187,6 +203,7 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Pressed = false;
+                Lobby!.ReadyButton.Disabled = _gameTicker.DisallowedLateJoin; // Arcane
                 Lobby!.ObserveButton.Disabled = false;
             }
             else
@@ -258,7 +275,12 @@ namespace Content.Client.Lobby
         {
             if (_protoMan.TryIndex(_gameTicker.LobbyBackground, out var proto))
             {
-                Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(proto.Background);
+                // Arcane-Edit-Start: animated media is decoded by CEF; native fallback uses its poster.
+                var path = proto.Poster ?? (proto.Background.Extension.Equals("gif", StringComparison.OrdinalIgnoreCase)
+                    ? (Robust.Shared.Utility.ResPath?) null : proto.Background);
+                Lobby!.Background.Texture = path != null && _resourceCache.TryGetResource<TextureResource>(path.Value, out var texture)
+                    ? texture.Texture : null;
+                // Arcane-Edit-End
 
                 var markup = Loc.GetString("lobby-state-background-text",
                     ("backgroundTitle", Loc.GetString(proto.Title)),

@@ -17,6 +17,7 @@
   <Import Project="..\RobustToolbox\Imports\Lidgren.props" />
   <Import Project="..\RobustToolbox\Imports\Client.props" />
   <Import Project="..\RobustToolbox\Imports\Shared.props" />
+  <Import Project="..\RobustToolbox\Imports\WebView.props" /> <!-- Arcane -->
 
   <ItemGroup>
     <ProjectReference Include="..\Content.Goobstation.Shared\Content.Goobstation.Shared.csproj" />
@@ -26,4 +27,20 @@
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
   <Import Project="..\RobustToolbox\MSBuild\Robust.EntitySystemSubscriptionsGenerator.targets" />
+  <!-- Arcane-Start -->
+  <PropertyGroup>
+    <BuildWebUI Condition="'$(BuildWebUI)' == ''">true</BuildWebUI>
+  </PropertyGroup>
+  <Target Name="BuildWebUIAssets" BeforeTargets="CoreBuild" Condition="'$(BuildWebUI)' == 'true' and Exists('..\WebUI\package.json')">
+    <Error Condition="!Exists('..\WebUI\package-lock.json')" Text="WebUI/package-lock.json is required for npm ci." />
+    <Exec Command="npm --version" IgnoreExitCode="true" ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="_WebUiNpmExitCode" />
+    </Exec>
+    <Error Condition="'$(_WebUiNpmExitCode)' != '0'" Text="npm is required to build WebUI. Install Node.js/npm or temporarily pass /p:BuildWebUI=false." />
+    <Exec Command="npm ci" WorkingDirectory="..\WebUI" />
+    <Exec Command="npm run build" WorkingDirectory="..\WebUI" />
+    <Error Condition="!Exists('..\Resources\dist\src\interfaces\escape-menu\index.html')" Text="WebUI build did not produce the Escape Menu entry page." />
+    <Error Condition="!Exists('..\Resources\dist\src\interfaces\lobby\index.html')" Text="WebUI build did not produce the Lobby entry page." />
+  </Target>
+  <!-- Arcane-End -->
 </Project>

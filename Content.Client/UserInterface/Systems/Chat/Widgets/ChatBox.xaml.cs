@@ -36,6 +36,7 @@ public partial class ChatBox : UIWidget
     private readonly ChatUIController _controller;
 
     public bool Main { get; set; }
+    public Func<ChatSelectChannel?, bool>? FocusOverride { get; set; } // Arcane
 
     public ChatSelectChannel SelectedChannel => ChatInput.ChannelSelector.SelectedChannel;
     // WD EDIT START
@@ -179,6 +180,7 @@ public partial class ChatBox : UIWidget
 
     public void Focus(ChatSelectChannel? channel = null)
     {
+        if (FocusOverride?.Invoke(channel) == true) return; // Arcane
         var input = ChatInput.Input;
         var selectStart = Index.End;
 

@@ -30,4 +30,11 @@ public sealed partial class LobbyBackgroundPrototype : IPrototype
     /// </summary>
     [DataField]
     public LocId Artist = "lobby-state-background-unknown-artist";
+
+    // Arcane-Start
+    [DataField] public ResPath? Poster;
+    [DataField] public ResPath? License;
+    [DataField] public float FocusX = 50;
+    [DataField] public float FocusY = 50;
+    // Arcane-End
 }

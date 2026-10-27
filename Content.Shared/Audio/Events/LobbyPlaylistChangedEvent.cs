@@ -18,6 +18,10 @@ public sealed class LobbyPlaylistChangedEvent : EntityEventArgs
     /// List of soundtrack filenames for lobby playlist.
     /// </summary>
     public string[] Playlist;
+    // Arcane-Start
+    public int Revision;
+    public bool LobbyOnly;
+    // Arcane-End
 }
 
 /// <summary>

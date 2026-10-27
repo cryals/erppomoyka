@@ -172,7 +172,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     /// <summary>
     /// Refreshes the character preview in the lobby chat.
     /// </summary>
-    private void RefreshLobbyPreview()
+    public void RefreshLobbyPreview() // Arcane-Edit: private > public; refresh after presentation reparenting.
     {
         if (PreviewPanel == null)
             return;

@@ -1,0 +1,28 @@
+- type: lobbyBackground
+  id: ArcanePhoto
+  background: /Textures/_Arcane/LobbyScreens/arcane.jpg
+  title: arcane-lobby-art-arcane
+  artist: arcane-lobby-artist-lucas
+  license: /Textures/_Arcane/LobbyScreens/arcane.jpg.license.txt
+
+- type: lobbyBackground
+  id: ArcaneSpace
+  background: /Textures/_Arcane/LobbyScreens/space.png
+  title: arcane-lobby-art-space
+  artist: arcane-lobby-artist-mahdi
+  license: /Textures/_Arcane/LobbyScreens/space.png.license.txt
+
+- type: lobbyBackground
+  id: ArcaneSpaceflight
+  background: /Textures/_Arcane/LobbyScreens/spacex.webp
+  title: arcane-lobby-art-spacex
+  artist: arcane-lobby-artist-pexels
+  license: /Textures/_Arcane/LobbyScreens/spacex.webp.license.txt
+
+- type: lobbyBackground
+  id: ArcaneRat
+  background: /Textures/_Arcane/LobbyScreens/rat.gif
+  poster: /Textures/_Arcane/LobbyScreens/rat-poster.png
+  title: arcane-lobby-art-rat
+  artist: arcane-lobby-artist-kraida
+  license: /Textures/_Arcane/LobbyScreens/rat.gif.license.txt

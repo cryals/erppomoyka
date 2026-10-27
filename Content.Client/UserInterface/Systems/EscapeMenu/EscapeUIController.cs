@@ -81,83 +81,19 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
         EscapeButton.OnPressed += EscapeButtonOnOnPressed;
     }
 
-    private void ActivateButton() => EscapeButton!.SetClickPressed(true);
-    private void DeactivateButton() => EscapeButton!.SetClickPressed(false);
+    private void ActivateButton() => EscapeButton?.SetClickPressed(true); // Arcane-Edit: EscapeButton! > EscapeButton?
+    private void DeactivateButton() => EscapeButton?.SetClickPressed(false); // Arcane-Edit: EscapeButton! > EscapeButton?
 
     public void OnStateEntered(GameplayState state)
     {
         DebugTools.Assert(_escapeWindow == null);
 
         _escapeWindow = UIManager.CreateWindow<Options.UI.EscapeMenu>();
-        StateEnteredTrauma(_escapeWindow); // Trauma
-
+        // Arcane-Edit-Start
         _escapeWindow.OnClose += DeactivateButton;
         _escapeWindow.OnOpen += ActivateButton;
-
-        _escapeWindow.FeedbackButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _feedback.ToggleWindow();
-        };
-
-        _escapeWindow.ChangelogButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _changelog.ToggleWindow();
-        };
-
-        _escapeWindow.RulesButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _info.OpenWindow();
-        };
-
-        _escapeWindow.DisconnectButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _console.ExecuteCommand("disconnect");
-        };
-
-        _escapeWindow.OptionsButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _options.OpenWindow();
-        };
-
-        // Arcane-Start
-        _escapeWindow.CharacterButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            OpenCharacterSetup();
-        };
-        // Arcane-End
-
-        _escapeWindow.QuitButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _console.ExecuteCommand("quit");
-        };
-
-        _escapeWindow.AdminRemarksButton.OnPressed += _ =>
-        {
-            CloseEscapeWindow();
-            _console.ExecuteCommand("adminremarks");
-        };
-
-        _escapeWindow.WikiButton.OnPressed += _ =>
-        {
-            _uri.OpenUri(_cfg.GetCVar(CCVars.InfoLinksWiki));
-        };
-
-        _escapeWindow.GuidebookButton.OnPressed += _ =>
-        {
-            _guidebook.ToggleGuidebook();
-        };
-
-        // Hide wiki button if we don't have a link for it.
-        _escapeWindow.WikiButton.Visible = _cfg.GetCVar(CCVars.InfoLinksWiki) != "";
-
-        _cfg.OnValueChanged(CCVars.SeeOwnNotes, OnSeeOwnNotesChanged, true);
+        InitializeWebUiMenu();
+        // Arcane-Edit-End
 
         CommandBinds.Builder
             .Bind(EngineKeyFunctions.EscapeMenu,
@@ -167,7 +103,9 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
 
     public void OnStateExited(GameplayState state)
     {
-        _cfg.UnsubValueChanged(CCVars.SeeOwnNotes, OnSeeOwnNotesChanged);
+        // Arcane-Edit-Start
+        ShutdownWebUiMenu();
+        // Arcane-Edit-End
 
         if (_escapeWindow != null)
         {
@@ -180,17 +118,7 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
         CommandBinds.Unregister<EscapeUIController>();
     }
 
-    private void OnSeeOwnNotesChanged(bool seeOwnNotes)
-    {
-        if (_escapeWindow == null)
-            return;
-
-        _escapeWindow.AdminRemarksButton.Disabled = !seeOwnNotes;
-        _escapeWindow.AdminRemarksButton.ToolTip = !seeOwnNotes
-            ? _loc.GetString("ui-escape-remarks-button-disabled")
-            : null;
-    }
-
+    // Arcane-Edit: OnSeeOwnNotesChanged updated the XAML button > WebUI state updates in EscapeUIController.WebUI.cs
     private void EscapeButtonOnOnPressed(ButtonEventArgs obj)
     {
         ToggleWindow();
@@ -212,12 +140,17 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
         if (_escapeWindow.IsOpen)
         {
             CloseEscapeWindow();
-            EscapeButton!.Pressed = false;
+            if (EscapeButton != null) EscapeButton.Pressed = false; // Arcane-Edit: EscapeButton!.Pressed = false > null-safe HUD update
         }
         else
         {
+            // Arcane-Start
+            GetMenuState();
+            _escapeWindow.PrepareBrowser();
+            _escapeWindow.FitToViewport(UIManager.WindowRoot.Size, _menuRows, _menuDividers);
+            // Arcane-End
             _escapeWindow.OpenCentered();
-            EscapeButton!.Pressed = true;
+            if (EscapeButton != null) EscapeButton.Pressed = true; // Arcane-Edit: EscapeButton!.Pressed = true > null-safe HUD update
         }
     }
     // Arcane-Start

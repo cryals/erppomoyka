@@ -24,6 +24,22 @@ namespace Content.Client.Info
 
         private ValueList<(CVarDef<string> cVar, Button button)> _infoLinks;
 
+        // Arcane-Start: both presentations use these same action delegates.
+        public readonly List<(string Id, string Icon, Button Button, Action Execute)> Actions = new();
+
+        private void BindAction(string id, string icon, Button button, Action execute)
+        {
+            button.OnPressed += _ => execute();
+            Actions.Add((id, icon, button, execute));
+        }
+
+        public void RefreshLinks()
+        {
+            foreach (var (cVar, link) in _infoLinks)
+                link.Visible = !string.IsNullOrWhiteSpace(_cfg.GetCVar(cVar));
+        }
+        // Arcane-End
+
         public LinkBanner()
         {
             // <Trauma>
@@ -39,7 +55,7 @@ namespace Content.Client.Info
             var uriOpener = IoCManager.Resolve<IUriOpener>();
 
             var rulesButton = new Button() {Text = Loc.GetString("server-info-rules-button")};
-            rulesButton.OnPressed += args => new RulesAndInfoWindow().Open();
+            BindAction("rules", "scale-balanced", rulesButton, () => new RulesAndInfoWindow().Open()); // Arcane-Edit: direct callback > shared action
             buttons.AddChild(rulesButton);
 
             AddInfoButton("server-info-discord-button", CCVars.InfoLinksDiscord);
@@ -53,25 +69,24 @@ namespace Content.Client.Info
             {
                 Text = Loc.GetString("rmc-ui-link-discord-account"),
             };
-            linkAccountButton.OnPressed += _ => OnToggleWindow?.Invoke();
+            BindAction("link-account", "link", linkAccountButton, () => OnToggleWindow?.Invoke()); // Arcane-Edit: direct callback > shared action
             buttons.AddChild(linkAccountButton);
 
             var guidebookController = UserInterfaceManager.GetUIController<GuidebookUIController>();
             var guidebookButton = new Button() { Text = Loc.GetString("server-info-guidebook-button") };
-            guidebookButton.OnPressed += _ =>
-            {
-                guidebookController.ToggleGuidebook();
-            };
+            // Arcane-Edit-Start
+            BindAction("guidebook", "book-open", guidebookButton, guidebookController.ToggleGuidebook);
+            // Arcane-Edit-End
             buttons.AddChild(guidebookButton);
 
             var changelogButton = new ChangelogButton();
-            changelogButton.OnPressed += args => UserInterfaceManager.GetUIController<ChangelogUIController>().ToggleWindow();
+            BindAction("changelog", "scroll", changelogButton, () => UserInterfaceManager.GetUIController<ChangelogUIController>().ToggleWindow()); // Arcane-Edit: direct callback > shared action
             buttons.AddChild(changelogButton);
 
             void AddInfoButton(string loc, CVarDef<string> cVar)
             {
                 var button = new Button { Text = Loc.GetString(loc) };
-                button.OnPressed += _ => uriOpener.OpenUri(_cfg.GetCVar(cVar));
+                BindAction(loc, "globe", button, () => uriOpener.OpenUri(_cfg.GetCVar(cVar))); // Arcane-Edit: direct callback > shared action
                 buttons.AddChild(button);
                 _infoLinks.Add((cVar, button));
             }

@@ -63,8 +63,9 @@ public sealed partial class LinkAccountUIController : UIController, IOnSystemCha
 
     private void OnUpdated()
     {
-        if (_escape.Window is { } window)
-            window.PatronPerksButton.Visible = _linkAccount.CanViewPatronPerks();
+        // Arcane-Edit-Start
+        _escape.NotifyAccountStateChanged();
+        // Arcane-Edit-End
 
         if (UIManager.ActiveScreen is not LobbyGui gui)
             return;

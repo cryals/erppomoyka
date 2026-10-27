@@ -22,7 +22,13 @@ namespace Content.Client.Voting.UI
         }
 
         private void OnOnPressed(ButtonEventArgs obj)
+            => ToggleMenu(); // Arcane
+
+        // Arcane-Start
+        public void ToggleMenu()
+        // Arcane-End
         {
+            if (!_voteManager.CanCallVote) return; // Arcane
             if (_voteCallMenu is { IsOpen: true })
             {
                 _voteCallMenu.Close();
@@ -49,7 +55,7 @@ namespace Content.Client.Voting.UI
             if (_voteCallMenu is { IsOpen: true })
                 _voteCallMenu.Close();
 
-            _voteManager.CanCallVoteChanged += UpdateCanCall;
+            _voteManager.CanCallVoteChanged -= UpdateCanCall; // Arcane-Edit: subscribe > unsubscribe on exit
         }
 
         private void UpdateCanCall(bool canCall)

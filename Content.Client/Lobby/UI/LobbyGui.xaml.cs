@@ -54,6 +54,7 @@ namespace Content.Client.Lobby.UI
 
                     break;
             }
+            PresentationChanged?.Invoke(); // Arcane
         }
 
         private void TogglePanel(bool value)

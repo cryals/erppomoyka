@@ -1,0 +1,158 @@
+================================================================================
+                            rat.gif — LICENSE PACK
+                          ЛИЦЕНЗИОННЫЙ ПАКЕТ rat.gif
+================================================================================
+
+File / Файл:          rat.gif
+Author / Автор:       Kraida
+Created for / Для:    ss14-art
+Year / Год:           2026
+
+This document contains two parts / Данный документ содержит две части:
+  PART 1 — General License / Общая лицензия
+  PART 2 — Special License for Arcane Project / Специальная лицензия для Arcane
+
+================================================================================
+  PART 1 — GENERAL LICENSE / ЧАСТЬ 1 — ОБЩАЯ ЛИЦЕНЗИЯ
+================================================================================
+
+--------------------------------------------------------------------------------
+EN
+--------------------------------------------------------------------------------
+
+Copyright (c) 2026 Kraida. All rights reserved.
+
+This image ("rat.gif") was created by Kraida for the ss14-art project.
+All rights to this work belong to ss14-art.
+
+You may NOT use, copy, modify, distribute, or publicly display this image
+for commercial purposes without prior written permission from the copyright
+holder.
+
+For licensing inquiries and commercial use requests, please contact:
+als@stopco.ru
+
+Unauthorized commercial use is strictly prohibited.
+
+--------------------------------------------------------------------------------
+RU
+--------------------------------------------------------------------------------
+
+Copyright (c) 2026 Kraida. Все права защищены.
+
+Данное изображение («rat.gif») создано автором Kraida для проекта ss14-art.
+Все права на данную работу принадлежат ss14-art.
+
+Запрещается использовать, копировать, изменять, распространять или публично
+демонстрировать данное изображение в коммерческих целях без предварительного
+письменного разрешения правообладателя.
+
+По вопросам лицензирования и коммерческого использования обращаться:
+als@stopco.ru
+
+Несанкционированное коммерческое использование строго запрещено.
+
+================================================================================
+  END OF PART 1 / КОНЕЦ ЧАСТИ 1
+================================================================================
+
+
+================================================================================
+  PART 2 — SPECIAL LICENSE AGREEMENT
+  ЧАСТЬ 2 — СПЕЦИАЛЬНОЕ ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ
+================================================================================
+
+File / Файл:              rat.gif
+Author / Автор:           Kraida
+Created for / Для:        ss14-art
+Licensee / Лицензиат:     Arcane project / Проект Arcane
+Licensor / Лицензиар:     AL-S (als@stopco.ru)
+Granted on / Дата выдачи: 27.10.2026
+Term / Срок действия:     Indefinite / Бессрочно
+
+--------------------------------------------------------------------------------
+ENGLISH VERSION
+--------------------------------------------------------------------------------
+
+Copyright (c) 2026 Kraida. All rights reserved. Rights held by ss14-art.
+
+SPECIAL PERMISSION FOR THE ARCANE PROJECT
+
+The Arcane project is hereby granted a non-exclusive, non-transferable right
+to use the work "rat.gif" on its own server for any purposes, including
+modification and integration into the project's content.
+
+TERMS AND CONDITIONS:
+
+1. GRANT OF RIGHTS
+   The Arcane project may use "rat.gif" on its server in any way it sees fit,
+   including but not limited to copying, modifying, and displaying the work
+   within the project.
+
+2. NON-TRANSFERABILITY
+   The Arcane project MAY NOT transfer, sublicense, or otherwise grant the
+   rights to use this work to any third party. All rights remain with the
+   copyright holder.
+
+3. TERM
+   This permission is granted on 27.10.2026 and is valid indefinitely
+   (without a fixed expiration date).
+
+4. TERMINATION
+   The copyright holder reserves the right to revoke this license at any time.
+   In such case, the Arcane project must be notified at least 7 (seven) days
+   before the license expires. Upon expiration of this notice period, all
+   rights granted under this document are terminated.
+
+5. CONTACT
+   For all matters regarding this license, contact: als@stopco.ru
+
+Granted by / Право выдал: AL-S (als@stopco.ru)
+
+--------------------------------------------------------------------------------
+РУССКАЯ ВЕРСИЯ
+--------------------------------------------------------------------------------
+
+Copyright (c) 2026 Kraida. Все права защищены. Права принадлежат ss14-art.
+
+СПЕЦИАЛЬНОЕ РАЗРЕШЕНИЕ ДЛЯ ПРОЕКТА ARCANE
+
+Проекту Arcane настоящим предоставляется неисключительное, непередаваемое
+право использовать работу «rat.gif» на своём сервере в любых целях, включая
+изменение и интеграцию в контент проекта.
+
+УСЛОВИЯ:
+
+1. ПРЕДОСТАВЛЕНИЕ ПРАВ
+   Проект Arcane может использовать «rat.gif» на своём сервере любым
+   способом по своему усмотрению, включая копирование, изменение и
+   отображение работы в рамках проекта.
+
+2. ЗАПРЕТ ПЕРЕДАЧИ
+   Проект Arcane НЕ ВПРАВЕ передавать, сублицензировать или иным образом
+   предоставлять права на использование данной работы третьим лицам.
+   Все права остаются у правообладателя.
+
+3. СРОК
+   Разрешение предоставлено 27.10.2026 и действует бессрочно
+   (без фиксированной даты окончания).
+
+4. РАСТОРЖЕНИЕ
+   Правообладатель имеет право разорвать действие данной лицензии в любой
+   момент, заранее уведомив проект Arcane за 7 (семь) суток до истечения
+   лицензии. По истечении указанного срока уведомления все права,
+   предоставленные настоящим документом, прекращаются.
+
+5. КОНТАКТЫ
+   По всем вопросам, связанным с данной лицензией, обращаться: als@stopco.ru
+
+Право выдал: AL-S (als@stopco.ru)
+
+================================================================================
+  END OF PART 2 / КОНЕЦ ЧАСТИ 2
+================================================================================
+
+
+================================================================================
+                        END OF LICENSE PACK / КОНЕЦ ПАКЕТА ЛИЦЕНЗИЙ
+================================================================================

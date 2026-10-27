@@ -124,6 +124,11 @@ public sealed class TickerConnectionStatusEvent : EntityEventArgs
 [Serializable, NetSerializable]
 public sealed class TickerLobbyStatusEvent : EntityEventArgs
 {
+    // Arcane-Start
+    public int PlayerCount;
+    public int LobbyCount;
+    public int ReadyCount;
+    // Arcane-End
     public bool IsRoundStarted { get; }
     public ProtoId<LobbyBackgroundPrototype>? LobbyBackground { get; }
     public bool YouAreReady { get; }

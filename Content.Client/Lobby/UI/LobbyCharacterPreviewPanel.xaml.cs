@@ -14,6 +14,12 @@ public sealed partial class LobbyCharacterPreviewPanel : Control
 {
     public Button CharacterSetupButton => CharacterSetup;
 
+    // Arcane-Start
+    public bool PreferencesLoaded => Loaded.Visible;
+    public string SummaryText => Summary.Text ?? string.Empty;
+    public bool CurrencyAvailable => Currency.Visible && !Currency.Disabled;
+    // Arcane-End
+
     public LobbyCharacterPreviewPanel()
     {
         RobustXamlLoader.Load(this);
