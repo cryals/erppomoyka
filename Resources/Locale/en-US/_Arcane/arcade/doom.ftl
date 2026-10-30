@@ -1,0 +1,14 @@
+ent-DoomArcade = DOOM arcade
+    .desc = A familiar cabinet running a very different game.
+ent-DoomArcadeComputerCircuitboard = DOOM arcade board
+    .desc = A circuit board for a DOOM arcade cabinet.
+arcane-doom-arcade-title = DOOM
+arcane-doom-arcade-start = Play
+arcane-doom-arcade-close = Leave arcade
+arcane-doom-arcade-loading = Loading game…
+arcane-doom-arcade-ready = Ready to play
+arcane-doom-arcade-failed = DOOM could not start. Check the local game assets and try again.
+arcane-doom-arcade-retry = Retry
+arcane-doom-arcade-controls = W/S: move · A/D: strafe · ←/→: turn · Space: fire · E: use · Esc: menu
+arcane-doom-arcade-audio = Sound
+arcane-doom-arcade-muted = Sound off

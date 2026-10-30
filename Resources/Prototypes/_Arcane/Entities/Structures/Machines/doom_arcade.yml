@@ -1,0 +1,38 @@
+- type: entity
+  id: DoomArcade
+  parent: ArcadeBase
+  name: DOOM arcade
+  description: A familiar cabinet running a very different game.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/arcade.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: arcade
+    - map: ["computerLayerScreen"]
+      state: screen_blockgame
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: panel
+      visible: false
+  - type: DoomArcade
+  - type: ActivatableUI
+    key: enum.DoomArcadeUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: StationAiWhitelist
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: DoomArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: DoomArcadeComputerCircuitboard
+
+- type: entity
+  id: DoomArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: DOOM arcade board
+  description: A circuit board for a DOOM arcade cabinet.
+  components:
+  - type: ComputerBoard
+    prototype: DoomArcade

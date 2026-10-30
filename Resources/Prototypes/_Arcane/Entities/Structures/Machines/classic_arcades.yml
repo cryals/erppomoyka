@@ -1,0 +1,182 @@
+- type: entity
+  id: FireRedArcade
+  parent: DoomArcade
+  name: FireRed arcade
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: FireRedArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: FireRedArcadeComputerCircuitboard
+
+- type: entity
+  id: FireRedArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: FireRed arcade board
+  components:
+  - type: ComputerBoard
+    prototype: FireRedArcade
+
+- type: entity
+  id: NuPogodiArcade
+  parent: DoomArcade
+  name: Nu, pogodi! arcade
+  description: A handheld egg-catching classic in an arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: NuPogodiArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: NuPogodiArcadeComputerCircuitboard
+
+- type: entity
+  id: NuPogodiArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Nu, pogodi! arcade board
+  components:
+  - type: ComputerBoard
+    prototype: NuPogodiArcade
+
+- type: entity
+  id: AsteroidsArcade
+  parent: DoomArcade
+  name: Asteroids arcade
+  description: A classic Asteroids arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: AsteroidsArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: AsteroidsArcadeComputerCircuitboard
+
+- type: entity
+  id: AsteroidsArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Asteroids arcade board
+  components:
+  - type: ComputerBoard
+    prototype: AsteroidsArcade
+
+- type: entity
+  id: FlappyBirdArcade
+  parent: DoomArcade
+  name: Flappy Bird arcade
+  description: A classic Flappy Bird arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: FlappyBirdArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: FlappyBirdArcadeComputerCircuitboard
+
+- type: entity
+  id: FlappyBirdArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Flappy Bird arcade board
+  components:
+  - type: ComputerBoard
+    prototype: FlappyBirdArcade
+
+- type: entity
+  id: PacmanArcade
+  parent: DoomArcade
+  name: Pac-Man arcade
+  description: A classic Pac-Man arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: PacmanArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: PacmanArcadeComputerCircuitboard
+
+- type: entity
+  id: PacmanArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Pac-Man arcade board
+  components:
+  - type: ComputerBoard
+    prototype: PacmanArcade
+
+- type: entity
+  id: PrinceArcade
+  parent: DoomArcade
+  name: Prince of Persia arcade
+  description: A classic Prince of Persia arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: PrinceArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: PrinceArcadeComputerCircuitboard
+
+- type: entity
+  id: PrinceArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Prince of Persia arcade board
+  components:
+  - type: ComputerBoard
+    prototype: PrinceArcade
+
+- type: entity
+  id: SnakeArcade
+  parent: DoomArcade
+  name: Snake arcade
+  description: A classic Snake arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: SnakeArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: SnakeArcadeComputerCircuitboard
+
+- type: entity
+  id: SnakeArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Snake arcade board
+  components:
+  - type: ComputerBoard
+    prototype: SnakeArcade
+
+- type: entity
+  id: InvadersArcade
+  parent: DoomArcade
+  name: Space Invaders arcade
+  description: A classic Space Invaders arcade cabinet.
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.DoomArcadeUiKey.Key:
+        type: InvadersArcadeBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: InvadersArcadeComputerCircuitboard
+
+- type: entity
+  id: InvadersArcadeComputerCircuitboard
+  parent: BaseComputerCircuitboard
+  name: Space Invaders arcade board
+  components:
+  - type: ComputerBoard
+    prototype: InvadersArcade

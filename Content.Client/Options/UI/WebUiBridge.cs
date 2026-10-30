@@ -18,6 +18,7 @@ public sealed class WebUiBridge : IDisposable
 {
     private const string Origin = "http://webui.local";
     private readonly string _entryUrl;
+    private readonly string? _gameUrl;
     private readonly IReadOnlyDictionary<string, string>? _assets;
     private readonly ConcurrentQueue<WebUiRequest> _requests = new();
     private readonly WebViewControl _view;
@@ -34,9 +35,12 @@ public sealed class WebUiBridge : IDisposable
         public readonly DateTime Started = DateTime.UtcNow;
     }
 
-    public WebUiBridge(WebViewControl view, string page = "escape-menu", IReadOnlyDictionary<string, string>? assets = null)
+    public WebUiBridge(WebViewControl view, string page = "escape-menu", IReadOnlyDictionary<string, string>? assets = null, string? game = null)
     {
-        if (page is not ("escape-menu" or "lobby")) throw new ArgumentOutOfRangeException(nameof(page));
+        if (page is not ("escape-menu" or "lobby" or "doom-arcade" or "arcade")) throw new ArgumentOutOfRangeException(nameof(page));
+        if (game != null && (page != "arcade" || game is not ("asteroids" or "flappy_bird" or "pacman" or "prince_of_persia" or "snake_game" or "space_Invaders" or "nu_pogodi" or "firered")))
+            throw new ArgumentOutOfRangeException(nameof(game));
+        _gameUrl = game == null ? null : Origin + "/dist/arcade/" + game + "/index.html";
         _entryUrl = Origin + "/dist/src/interfaces/" + page + "/index.html";
         _assets = assets;
         _view = view;
@@ -117,7 +121,8 @@ public sealed class WebUiBridge : IDisposable
 
     private void BeforeBrowse(IBeforeBrowseContext context)
     {
-        if (!string.Equals(context.Url, _entryUrl, StringComparison.Ordinal))
+        if (!string.Equals(context.Url, _entryUrl, StringComparison.Ordinal) &&
+            !string.Equals(context.Url, _gameUrl, StringComparison.Ordinal))
             context.DoCancel();
     }
 
@@ -167,7 +172,8 @@ public sealed class WebUiBridge : IDisposable
         mime = extension.ToLowerInvariant() switch
         {
             "webp" => "image/webp", "png" => "image/png", "jpg" or "jpeg" => "image/jpeg",
-            "gif" => "image/gif", "txt" => "text/plain; charset=utf-8", _ => mime,
+            "gif" => "image/gif", "txt" or "cfg" => "text/plain; charset=utf-8",
+            "wasm" => "application/wasm", "wad" => "application/octet-stream", _ => mime,
         };
         context.DoRespondStream(stream, mime);
     }
@@ -196,12 +202,12 @@ public sealed class WebUiBridge : IDisposable
         context.DoRespondStream(new MemoryStream(), "text/plain", HttpStatusCode.NoContent);
     }
 
-    private static YamlMappingNode? ParsePayload(string encoded)
+    private static YamlMappingNode? ParsePayload(string encoded, int maxJsonLength = 8192)
     {
         try
         {
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
-            if (json.Length > 8192 || !IsFlatJsonObject(json)) return null;
+            if (json.Length > maxJsonLength || !IsFlatJsonObject(json)) return null;
             var yaml = new YamlStream();
             yaml.Load(new StringReader(json));
             return yaml.Documents.Count == 1 ? yaml.Documents[0].RootNode as YamlMappingNode : null;
@@ -308,16 +314,30 @@ public sealed class WebUiBridge : IDisposable
     {
         complete = request;
         if (request.Event != "chunk-data") return true;
+        var maxChunks = 32;
+        var maxPartLength = 1500;
         if (PropertyCount(request.Data) != 6 || !TryGetString(request.Data, "chunkId", out var chunkId) ||
             !TryGetString(request.Data, "index", out var indexText) || !int.TryParse(indexText, out var index) ||
             !TryGetString(request.Data, "total", out var totalText) || !int.TryParse(totalText, out var total) ||
             !TryGetString(request.Data, "data", out var part) ||
             !TryGetString(request.Data, "originalEventType", out var eventName) ||
             !TryGetString(request.Data, "originalRequestId", out var requestId) ||
-            total is < 1 or > 32 || index < 0 || index >= total || chunkId.Length > 80 ||
-            requestId != request.RequestId || part.Length > 1500 ||
+            total < 1 || index < 0 || chunkId.Length > 80 || requestId != request.RequestId ||
             eventName is not ("escape-menu-action" or "escape-menu-get-state" or "escape-menu-close" or
-                "lobby-action" or "lobby-get-state" or "lobby-set-ui-visible" or "lobby-layout" or "lobby-chat-send" or "lobby-chat-draft"))
+                "lobby-action" or "lobby-get-state" or "lobby-set-ui-visible" or "lobby-layout" or "lobby-chat-send" or "lobby-chat-draft" or
+                "firered-save-load" or "firered-save-write"))
+        {
+            SendError(request.RequestId, "invalid-payload");
+            return false;
+        }
+
+        if (eventName is "firered-save-load" or "firered-save-write")
+        {
+            maxChunks = 224;
+            maxPartLength = 9000;
+        }
+
+        if (total > maxChunks || part.Length > maxPartLength)
         {
             SendError(request.RequestId, "invalid-payload");
             return false;
@@ -341,7 +361,8 @@ public sealed class WebUiBridge : IDisposable
         chunk.Parts[index] = part;
         if (chunk.Parts.Any(x => x == null)) return false;
         _chunks.Remove(chunkId);
-        complete = new WebUiRequest(eventName, requestId, ParsePayload(string.Concat(chunk.Parts)));
+        complete = new WebUiRequest(eventName, requestId, ParsePayload(string.Concat(chunk.Parts),
+            eventName is "firered-save-load" or "firered-save-write" ? 1_500_000 : 8192));
         if (complete.Data != null) return true;
         SendError(requestId, "invalid-payload");
         return false;
